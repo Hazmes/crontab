@@ -84,7 +84,17 @@ if __name__ == "__main__":
             'month': list(range(1,13)), 
             'day_of_week': list(range(7)), 
         }
-    ),    
+    ),
+    (
+        "30 1,5 20-30 */2 1,3,5",
+        {
+            'minute': [30],
+            'hour': [1,5], 
+            'day_of_month': [20,21,22,23,24,25,26,27,28,29,30],
+            'month': [1,3,5,7,9,11], 
+            'day_of_week': [1,3,5], 
+        }
+    ),
     (
         "*/15 2,5 1-10 */2 1,3",
         {
@@ -103,4 +113,5 @@ def test_cron_parser(schedule,expanded):
 def test_value_error():
     with pytest.raises(ValueError):
         parse_cron_schedule("3-2 * * * *")
+        parse_cron_schedule("* * * * * *")
     
