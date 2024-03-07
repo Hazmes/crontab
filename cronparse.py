@@ -1,11 +1,12 @@
+# pyright: strict
 import re
 import pytest
 
-def parse_cron_schedule(cron_schedule):
+def parse_cron_schedule(cron_schedule: str) -> dict[str, list[int]]:
     """
     Parse a cron schedule and return a dictionary with individual components.
     """
-    components = cron_schedule.split()
+    components: list[str] = cron_schedule.split()
 
     if len(components) != 5:
         raise ValueError("Invalid cron schedule format. Must have 5 components.")
@@ -20,17 +21,17 @@ def parse_cron_schedule(cron_schedule):
         'day_of_week': parse_cron_component(day_of_week, list(range(7))),
     }
 
-def parse_cron_component(component, options):
+def parse_cron_component(component: str, options: list[int]) -> list[int]:
     """
     Parse a single cron component (minute, hour, etc.) and return a list of values.
     """
     # Check the simplest case
-    if component == '*':
+    if component=='*':
         return options
 
     # Check for dash operator
     dash_matches = re.search(r"^(\d{1,2})-(\d{1,2})$", component)
-    if dash_matches:
+    if dash_matches is not None:
         mini, maxi = int(dash_matches.group(1)), int(dash_matches.group(2))
         if mini < min(options) or maxi > max(options) or mini >= maxi:
             raise ValueError(f"Invalid dash operator {component} for {options}") 
@@ -106,7 +107,7 @@ if __name__ == "__main__":
         }
     ),
 ])
-def test_cron_parser(schedule,expanded):
+def test_cron_parser(schedule: str, expanded: dict[str, list[int]]):
     parsed_schedule = parse_cron_schedule(schedule)
     assert parsed_schedule == expanded 
 
